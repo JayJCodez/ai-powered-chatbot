@@ -5,7 +5,7 @@ A modern, responsive chatbot interface built with vanilla HTML, CSS, and JavaScr
 ## 🔗 Related Repositories
 
 - **Frontend (this repo)**: Complete chatbot UI interface
-- **Backend**: [AI Chatbot Server](https://github.com/yourusername/ai-chatbot-server) - API server with AI integration
+- **Backend**: [AI Chatbot Server](https://github.com/JayJCodez/ai-powered-chatbot-server) - API server with AI integration
 
 ## Features
 
@@ -30,6 +30,7 @@ A modern, responsive chatbot interface built with vanilla HTML, CSS, and JavaScr
 ### Quick Start (Full-Stack)
 
 1. **Clone both repositories**:
+
 ```bash
 # Frontend
 git clone https://github.com/yourusername/ai-chatbot.git
@@ -42,6 +43,7 @@ npm install && npm start
 ```
 
 2. **Start the frontend**:
+
 ```bash
 # In the frontend directory
 npm install
@@ -55,6 +57,7 @@ npm start
 To run just the frontend interface:
 
 1. Clone this repository:
+
 ```bash
 git clone https://github.com/yourusername/ai-chatbot.git
 cd ai-chatbot
@@ -62,7 +65,8 @@ cd ai-chatbot
 
 2. Open `chatbot.html` in your web browser or serve it using a local server:
 
-2. Open `chatbot.html` in your web browser or serve it using a local server:
+3. Open `chatbot.html` in your web browser or serve it using a local server:
+
 ```bash
 # Using Python
 python -m http.server 8000
@@ -80,12 +84,13 @@ npx serve .
 The chatbot is configured to work with a backend API. Update the `API_BASE_URL` in the script section:
 
 ```javascript
-const API_BASE_URL = 'your-api-endpoint';
+const API_BASE_URL = "your-api-endpoint";
 ```
 
 ### Customization
 
 #### Styling
+
 Modify the CSS variables in the `<style>` section to match your brand:
 
 ```css
@@ -97,12 +102,13 @@ Modify the CSS variables in the `<style>` section to match your brand:
 ```
 
 #### Messages
+
 Customize the initial greeting message:
 
 ```javascript
 const messageData = {
   content: "Hello! How can I help you today?",
-  type: "Bot"
+  type: "Bot",
 };
 ```
 
@@ -123,6 +129,7 @@ ai-chatbot/
 The chatbot expects the following API endpoints:
 
 ### Start Conversation
+
 ```
 POST /api/conversations/start-conversation
 Content-Type: application/json
@@ -133,6 +140,7 @@ Content-Type: application/json
 ```
 
 ### Send Message
+
 ```
 POST /api/conversations/send-message
 Content-Type: application/json
