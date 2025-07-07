@@ -1,0 +1,37 @@
+{
+  "name": "ai-powered-chatbot",
+  "version": "1.0.0",
+  "description": "A modern, responsive chatbot interface built with vanilla HTML, CSS, and JavaScript. Works with AI Chatbot Server for full-stack functionality.",
+  "main": "chatbot.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "serve": "npx serve .",
+    "dev": "npx live-server .",
+    "setup": "echo 'Frontend setup complete. Clone the backend from: https://github.com/yourusername/ai-chatbot-server'"
+  },
+  "keywords": [
+    "chatbot",
+    "ai",
+    "javascript",
+    "html",
+    "css",
+    "chat",
+    "ui",
+    "frontend",
+    "vanilla-js"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ai-chatbot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/ai-chatbot/issues"
+  },
+  "homepage": "https://github.com/yourusername/ai-chatbot#readme",
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "serve": "^14.2.0"
+  }
+}

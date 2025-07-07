@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI-Powered Chat Bot</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      .chatbot-open-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background-color: #5c2121;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        z-index: 1000;
+      }
+
+      .chatbot-open-toggle:hover {
+        background-color: #7a2d2d;
+        transform: scale(1.1);
+      }
+
+      .chatbot-container {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        width: 300px;
+        height: 400px;
+        background-color: #f2f0ef;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        display: none;
+        flex-direction: column;
+        z-index: 999;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .chatbot-container.active {
+        display: flex;
+        animation: slideUp 0.3s ease-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .chatbot-header {
+        height: 50px;
+        background-color: #5c2121;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 15px;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .end-chat-btn {
+        height: 30px;
+        padding: 4px 12px;
+        color: white;
+        border: none;
+        background-color: rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 12px;
+        transition: background-color 0.2s ease;
+      }
+
+      .end-chat-btn:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+
+      .chatbox-container {
+        flex: 1;
+        overflow-y: auto;
+        background-color: white;
+        padding: 10px;
+      }
+
+      .chatbox-container::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .chatbox-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      .chatbox-container::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 2px;
+      }
+
+      .message {
+        margin-bottom: 10px;
+        display: flex;
+      }
+
+      .message-content {
+        max-width: 80%;
+        padding: 10px 12px;
+        border-radius: 18px;
+        font-size: 14px;
+        line-height: 1.4;
+        word-wrap: break-word;
+      }
+
+      .message.user {
+        justify-content: flex-end;
+      }
+
+      .message.user .message-content {
+        background-color: #5c2121;
+        color: white;
+      }
+
+      .message.bot .message-content {
+        background-color: #f0f0f0;
+        color: #333;
+      }
+
+      .chat-input-container {
+        width: 100%;
+        background-color: #f2f0ef;
+        display: flex;
+        align-items: center;
+        border-top: 1px solid #e0e0e0;
+      }
+
+      .message-input {
+        border: none;
+        width: 100%;
+        height: 50px;
+        resize: none;
+        min-height: 50px;
+        max-height: 50px;
+        overflow-y: auto;
+        padding: 15px;
+        font-size: 14px;
+        font-family: inherit;
+        background: transparent;
+        outline: none;
+      }
+
+      .message-input::placeholder {
+        color: #999;
+      }
+
+      .send-button {
+        width: 60px;
+        height: 50px;
+        background-color: #5c2121;
+        color: white;
+        border: none;
+        border-radius: 0 0 10px 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s ease;
+      }
+
+      .send-button:hover {
+        background-color: #7a2d2d;
+      }
+
+      .send-button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+
+  <body style="height: 100vh; margin: 0; padding: 0">
+    <button class="chatbot-open-toggle" aria-label="Open chatbot">
+      <img
+        src="./assets/icons/chat-svgrepo-com.svg"
+        alt="Chat icon"
+        height="30"
+        width="30"
+      />
+    </button>
+
+    <div class="chatbot-container">
+      <div class="chatbot-header">
+        <span>AI Chat Assistant</span>
+        <button id="end-chat-btn" class="end-chat-btn" aria-label="End chat">
+          End Chat
+        </button>
+      </div>
+
+      <div class="chatbox-container">
+        <!-- Messages will be appended dynamically here -->
+      </div>
+
+      <div class="chat-input-container">
+        <textarea
+          id="message-input"
+          class="message-input"
+          placeholder="Type your message here..."
+          aria-label="Message input"
+        >
+        </textarea>
+        <button id="send-button" class="send-button" aria-label="Send message">
+          <span>→</span>
+        </button>
+      </div>
+    </div>
+  </body>
+
+  <script type="module">
+    document.addEventListener("DOMContentLoaded", function () {
+      // Configuration
+      const API_BASE_URL = "http://localhost:5100/api";
+
+      // User context structure
+      let userContext = null;
+
+      // Load user context from localStorage
+      const savedUserContext = localStorage.getItem("userContext");
+      if (savedUserContext) {
+        try {
+          const parsedContext = JSON.parse(savedUserContext);
+          if (parsedContext && typeof parsedContext === "object") {
+            userContext = parsedContext;
+          } else {
+            console.error("Invalid user context format in localStorage");
+          }
+        } catch (error) {
+          console.error("Error parsing user context from localStorage:", error);
+        }
+      } else {
+        console.log("No user context found in localStorage");
+      }
+
+      // DOM selectors
+      const chatbotOpenToggle = document.querySelector(".chatbot-open-toggle");
+      const chatbotContainer = document.querySelector(".chatbot-container");
+      const chatInput = document.querySelector("#message-input");
+      const chatBoxContainer = document.querySelector(".chatbox-container");
+      const sendButton = document.querySelector("#send-button");
+      const endChatButton = document.querySelector("#end-chat-btn");
+
+      // Message rendering function
+      const appendMessage = (messageData) => {
+        const messageContainer = document.createElement("div");
+        messageContainer.classList.add("message");
+        messageContainer.classList.add(messageData.type.toLowerCase());
+
+        const messageContent = document.createElement("div");
+        messageContent.classList.add("message-content");
+        messageContent.textContent = messageData.content || "";
+
+        messageContainer.appendChild(messageContent);
+        chatBoxContainer.appendChild(messageContainer);
+
+        // Auto-scroll to bottom
+        chatBoxContainer.scrollTop = chatBoxContainer.scrollHeight;
+      };
+
+      // Event listeners
+      chatbotOpenToggle.addEventListener("click", function () {
+        chatbotContainer.classList.toggle("active");
+      });
+
+      // Initialize chatbot with greeting if no user context
+      if (!userContext || !userContext.id) {
+        const messageData = {
+          content: "Hello! What is your name?",
+          type: "Bot",
+        };
+        appendMessage(messageData);
+      }
+
+      // Input event handlers
+      chatInput.addEventListener("input", function (e) {
+        const isEmpty = e.target.value.trim() === "";
+        sendButton.disabled = isEmpty;
+      });
+
+      chatInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          const message = chatInput.value.trim();
+          if (message) {
+            if (!userContext || !userContext.id) {
+              sendMessage(
+                {
+                  content: message,
+                  type: "User",
+                },
+                message
+              );
+            } else {
+              sendMessage({
+                content: message,
+                type: "User",
+              });
+            }
+          }
+        }
+      });
+
+      sendButton.addEventListener("click", function () {
+        const message = chatInput.value.trim();
+        if (message) {
+          if (!userContext || !userContext.id) {
+            sendMessage(
+              {
+                content: message,
+                type: "User",
+              },
+              message
+            );
+          } else {
+            sendMessage({
+              content: message,
+              type: "User",
+            });
+          }
+        }
+      });
+
+      endChatButton.addEventListener("click", function () {
+        // Clear user context and localStorage
+        userContext = null;
+        localStorage.removeItem("userContext");
+
+        // Clear chat box
+        chatBoxContainer.innerHTML = "";
+        appendMessage({
+          content: "Chat has ended. You can start a new conversation.",
+          type: "Bot",
+        });
+
+        chatbotContainer.classList.remove("active");
+        console.log("Chat ended and user context cleared.");
+      });
+
+      // Load previous messages
+      async function loadPreviousMessages() {
+        try {
+          if (!userContext || !userContext.id) {
+            console.log("No user context available. Skipping message loading.");
+            return;
+          }
+
+          // Future implementation: Load from server
+          // const response = await fetch(`${API_BASE_URL}/conversations/${userContext.conversationId}/messages`);
+          // const messages = await response.json();
+
+          const messages = userContext.messages || [];
+          messages.forEach((message) => {
+            appendMessage({
+              id: message.id,
+              content: message.content,
+              type: message.type,
+              created_at: message.created_at,
+            });
+          });
+        } catch (err) {
+          console.error(`Error loading previous messages: ${err.message}`);
+        }
+      }
+
+      // Create new user and conversation
+      async function createNewUserAndConversation(name) {
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/conversations/start-conversation`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ name }),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`Failed to create user: ${response.status}`);
+          }
+
+          const newUserResponse = await response.json();
+          console.log("New user created:", newUserResponse);
+
+          userContext = {
+            id: newUserResponse.user.id,
+            name: newUserResponse.user.name,
+            conversationId: newUserResponse.conversation.id,
+            messages: newUserResponse.conversation.messages || [],
+          };
+
+          // Save to localStorage
+          localStorage.setItem("userContext", JSON.stringify(userContext));
+        } catch (err) {
+          console.error("Error creating new user and conversation:", err);
+          throw err;
+        }
+      }
+
+      // Send message function
+      async function sendMessage(messageData, name = null) {
+        try {
+          // Create user if doesn't exist
+          if (!userContext || !userContext.id) {
+            await createNewUserAndConversation(name);
+          }
+
+          // Display user message immediately
+          appendMessage(messageData);
+          chatInput.value = "";
+          sendButton.disabled = true;
+
+          // Send to server
+          const response = await fetch(
+            `${API_BASE_URL}/conversations/send-message`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userId: userContext.id,
+                conversationId: userContext.conversationId,
+                message: messageData,
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`Failed to send message: ${response.status}`);
+          }
+
+          const responseData = await response.json();
+
+          // Update userContext
+          userContext.conversationId =
+            responseData.messages.userMessage.conversation_id;
+
+          // Add messages to context
+          userContext.messages.push({
+            id: responseData.messages.userMessage.id,
+            content: responseData.messages.userMessage.content,
+            type: responseData.messages.userMessage.type,
+            created_at: responseData.messages.userMessage.created_at,
+          });
+
+          userContext.messages.push({
+            id: responseData.messages.botMessage.id,
+            content: responseData.messages.botMessage.content,
+            type: responseData.messages.botMessage.type,
+            created_at: responseData.messages.botMessage.created_at,
+          });
+
+          // Display bot response
+          appendMessage({
+            id: responseData.messages.botMessage.id,
+            content: responseData.messages.botMessage.content,
+            type: responseData.messages.botMessage.type,
+            created_at: responseData.messages.botMessage.created_at,
+          });
+        } catch (err) {
+          console.error(`Error sending message: ${err.message}`);
+
+          // Show error message to user
+          appendMessage({
+            content: "Sorry, I'm having trouble connecting. Please try again.",
+            type: "Bot",
+          });
+        } finally {
+          // Save context to localStorage
+          if (userContext) {
+            localStorage.setItem("userContext", JSON.stringify(userContext));
+          }
+        }
+      }
+
+      // Load previous messages on page load
+      loadPreviousMessages();
+    });
+  </script>
+</html>
