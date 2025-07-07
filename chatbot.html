@@ -230,11 +230,15 @@
       </div>
     </div>
   </body>
-
+  <script type="module">
+    window.APP_CONFIG = {
+      API_URL: "http://localhost:5100/api",
+    };
+  </script>
   <script type="module">
     document.addEventListener("DOMContentLoaded", function () {
       // Configuration
-      const API_BASE_URL = "http://localhost:5100/api";
+      const API_BASE_URL = window.APP_CONFIG.API_URL;
 
       // User context structure
       let userContext = null;
@@ -268,7 +272,9 @@
       const appendMessage = (messageData) => {
         const messageContainer = document.createElement("div");
         messageContainer.classList.add("message");
-        messageContainer.classList.add(messageData.type.toLowerCase());
+        messageContainer.classList.add(
+          messageData?.type?.toLowerCase() || "bot"
+        );
 
         const messageContent = document.createElement("div");
         messageContent.classList.add("message-content");
@@ -386,6 +392,9 @@
         }
       }
 
+      // Load previous messages on page load
+      loadPreviousMessages();
+
       // Create new user and conversation
       async function createNewUserAndConversation(name) {
         try {
@@ -498,9 +507,6 @@
           }
         }
       }
-
-      // Load previous messages on page load
-      loadPreviousMessages();
     });
   </script>
 </html>

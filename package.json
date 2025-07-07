@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/yourusername/ai-chatbot#readme",
   "devDependencies": {
+    "dotenv-cli": "^8.0.0",
     "live-server": "^1.2.2",
     "serve": "^14.2.0"
   }
